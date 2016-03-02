@@ -548,7 +548,7 @@ Never use `::` for regular method invocation.
     elem #=> NameError: undefined local variable or method `elem'
     ```
 
-* Never use `then` for multi-line `if/unless`.
+* Never use `then` for multi-line `if`.
 
     ```Ruby
     # bad
@@ -562,7 +562,7 @@ Never use `::` for regular method invocation.
     end
     ```
 
-* Always put the condition on the same line as the `if`/`unless` in a multi-line conditional.
+* Always put the condition on the same line as the `if` in a multi-line conditional.
 
     ```Ruby
     # bad
@@ -678,9 +678,9 @@ Never use `::` for regular method invocation.
     document.saved? || document.save!
     ```
 
-* Avoid multi-line `?:` (the ternary operator); use `if/unless` instead.
+* Avoid multi-line `?:` (the ternary operator); use `if` instead.
 
-* Favor modifier `if/unless` usage when you have a single-line
+* Favor modifier `if` usage when you have a single-line
   body. Another good alternative is the usage of control flow `&&/||`.
 
     ```Ruby
@@ -696,42 +696,11 @@ Never use `::` for regular method invocation.
     some_condition && do_something
     ```
 
-* Favor `unless` over `if` for negative conditions (or control
-  flow `||`).
+* Never use `unless`. Even your code looks simple and clear now, it going to 
+  changed a lot in future. Mostly people are just adding more conditions 
+  without replacing `unless` with `if`, so code becomes messy quickly.
 
-    ```Ruby
-    # bad
-    do_something if !some_condition
-
-    # bad
-    do_something if not some_condition
-
-    # good
-    do_something unless some_condition
-
-    # another good option
-    some_condition || do_something
-    ```
-
-* Never use `unless` with `else`. Rewrite these with the positive case first.
-
-    ```Ruby
-    # bad
-    unless success?
-      puts 'failure'
-    else
-      puts 'success'
-    end
-
-    # good
-    if success?
-      puts 'success'
-    else
-      puts 'failure'
-    end
-    ```
-
-* Don't use parentheses around the condition of an `if/unless/while/until`.
+* Don't use parentheses around the condition of an `if/while/until`.
 
     ```Ruby
     # bad
@@ -803,7 +772,7 @@ Never use `::` for regular method invocation.
    loop do
      puts val
      val += 1
-     break unless val < 0
+     break if val >= 0
    end
    ```
 
@@ -950,14 +919,14 @@ Never use `::` for regular method invocation.
 
       # bad
       def do_something(options = {})
-        unless options[:when] == :later
+        if options[:when] != :later
           output(self.options[:message])
         end
       end
 
       # good
       def do_something(params = {})
-        unless params[:when] == :later
+        if params[:when] != :later
           output(options[:message])
         end
       end
@@ -1167,7 +1136,7 @@ setting the warn level to 0 via `-W0`).
 
     ```Ruby
     # bad
-    paths = [paths] unless paths.is_a? Array
+    paths = [paths] if !paths.is_a? Array
     paths.each { |path| do_something(path) }
 
     # good
@@ -1256,9 +1225,9 @@ setting the warn level to 0 via `-W0`).
 
     # good
       def compute_thing(thing)
-        return unless thing[:foo]
+        return if !thing[:foo]
         update_with_bar(thing[:foo])
-        return re_compute(thing) unless thing[:foo][:bar]
+        return re_compute(thing) if !thing[:foo][:bar]
         partial_compute(thing)
       end
     ```
@@ -2038,7 +2007,7 @@ block.
     rescue
       # .. handle error
     ensure
-      f.close unless f.nil?
+      f.close if f
     end
     ```
 
